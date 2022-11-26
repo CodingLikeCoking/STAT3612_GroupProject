@@ -9,6 +9,21 @@ def extract_X(csv_file):
     X_arr = X_arr[:, :, 1, :]
     return X_arr
 
+def extract_X_clean(csv_file):
+    X_df = pd.read_csv(csv_file, index_col=[0], header=[0, 1, 2])
+    X_arr = np.array(X_df)
+    X_shape = X_arr.shape
+    X_arr = np.reshape(X_arr, (X_shape[0], -1, 3, 24))
+    def check_mask(sample):
+        mask = sample[:, 0, :] # (104, 24)
+        mask = np.sum(mask, axis=-1) # (104)
+        mask = np.array(list(map(lambda item: max(0, 1-item), mask)))
+        all_fake = np.average(mask, axis=-1)
+        return all_fake < 0.7
+    X_arr = np.array(list(filter(check_mask, X_arr)))
+    X_arr = X_arr[:, :, 1, :]
+    return X_arr
+
 def extract_y(csv_file):
     y_df = pd.read_csv(csv_file, index_col=[0], header=[0])
     y_arr = np.array(y_df)[:, 0]
