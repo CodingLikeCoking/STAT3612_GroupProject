@@ -45,5 +45,4 @@ def attribute_reduction(X_arr, n_components):
     new_arr = np.reshape(new_arr, (n, t, n_components))
     new_arr = np.transpose(new_arr, (0, 2, 1))
     new_arr = np.reshape(new_arr, (n, n_components, t))
-    exp_var_ratio = sum(pca.explained_variance_ratio_)
-    return new_arr, exp_var_ratio
+    return new_arr
